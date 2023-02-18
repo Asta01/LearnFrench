@@ -5,7 +5,6 @@ from tkinter import ttk
 from tkinter.messagebox import showinfo
 import random
 
-
 #use excel file with words
 dict = pd.read_excel('dictionary.ods')
 
@@ -19,17 +18,35 @@ r = np.random.randint(0, len(dict), size=k)
 # MAIN ROOT
 ###################################################################################################################
 
+def information(rootPL,inftitle,inftext):
+    message_box = tk.Toplevel(rootPL)
+    message_box.title(inftitle)
+    message_box.geometry('400x200')
+    message_box['bg'] = '#49A'
+    message_label = tk.Label(message_box,
+        text = inftext,
+        bg = '#49A',
+        font = ("Arial", 40)
+    )
+    message_label.pack(padx=10, pady=10)
+
+    ok_button = tk.Button(message_box, text = 'OK', command = message_box.destroy)
+    ok_button.pack(pady=10)
+
 def translate(rootPL,i,a):
     if a == 'POLISH':
         Translate_button = tk.Button(rootPL,
             text = "Show translation",
-            command = lambda: showinfo(
+            command = lambda: information(rootPL,
                 'Translation of' + dict.at[r[i],a],
                 dict.at[r[i],'FRENCH']
             )
         )
     else:
-        Translate_button = tk.Button(rootPL, text = "Show translation", command = lambda: showinfo('Translation of' + dict.at[r[i], a], dict.at[r[i],'POLISH']))
+        Translate_button = tk.Button(
+            rootPL,
+            text = "Show translation",
+            command = lambda: information(rootPL,'Translation of' + dict.at[r[i], a], dict.at[r[i],'POLISH']))
     return Translate_button
 
 def next_word(rootPL,i,a):
