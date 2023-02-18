@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import tkinter as tk
 from tkinter import ttk
-from tkinter.messagebox import showinfo
 import random
 
 #use excel file with words
@@ -18,7 +17,7 @@ r = np.random.randint(0, len(dict), size=k)
 # MAIN ROOT
 ###################################################################################################################
 
-def information(rootPL,inftitle,inftext):
+def information(rootPL,inftitle,inftext,size):
     message_box = tk.Toplevel(rootPL)
     message_box.title(inftitle)
     message_box.geometry('400x200')
@@ -26,7 +25,7 @@ def information(rootPL,inftitle,inftext):
     message_label = tk.Label(message_box,
         text = inftext,
         bg = '#49A',
-        font = ("Arial", 40)
+        font = ("Arial", size)
     )
     message_label.pack(padx=10, pady=10)
 
@@ -37,16 +36,24 @@ def translate(rootPL,i,a):
     if a == 'POLISH':
         Translate_button = tk.Button(rootPL,
             text = "Show translation",
-            command = lambda: information(rootPL,
+            command = lambda: information(
+                rootPL,
                 'Translation of' + dict.at[r[i],a],
-                dict.at[r[i],'FRENCH']
+                dict.at[r[i],'FRENCH'],
+                40
             )
         )
     else:
         Translate_button = tk.Button(
             rootPL,
             text = "Show translation",
-            command = lambda: information(rootPL,'Translation of' + dict.at[r[i], a], dict.at[r[i],'POLISH']))
+            command = lambda: information(
+                rootPL,
+                'Translation of' + dict.at[r[i], a],
+                dict.at[r[i],'POLISH'],
+                40
+            )
+        )
     return Translate_button
 
 def next_word(rootPL,i,a):
@@ -54,8 +61,11 @@ def next_word(rootPL,i,a):
         rootPL.destroy()
         first_language(i + 1, a)
     else:
-        showinfo('Information',
-                 'This is the last word. Please choose last word or quit the game.'
+        information(
+            rootPL,
+            'Information',
+            'This is the last word. \n Please choose last word or quit the game.',
+            14
         )
 
 def last_word(rootPL,i,a):
@@ -63,9 +73,11 @@ def last_word(rootPL,i,a):
         rootPL.destroy()
         first_language(i - 1, a)
     else:
-        showinfo(
+        information(
+            rootPL,
             'Information',
-            'This is the first word. Please choose next word or quit the game.'
+            'This is the first word. \n Please choose next word or quit the game.',
+            12
         )
 
 def next_button(rootPL,i,a):
