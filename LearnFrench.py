@@ -1,53 +1,113 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk
+from tkinter.messagebox import showinfo
+import random
+
 
 #use excel file with words
 dict = pd.read_excel('dictionary.ods')
 
-#PL
-def first_PL():
-    for i in range(len(dict)):
-        fig = plt.figure()
-        ax = fig.add_subplot()
-        ax.axis('off')
-        ax.text(0.1, 0.5, dict.at[i, 'POLISH'], fontsize=40, fontweight='bold')
-        plt.show()
-        fig = plt.figure()
-        ax = fig.add_subplot()
-        ax.axis('off')
-        ax.text(0.1, 0.5, dict.at[i, 'FRENCH'], fontsize=40, fontweight='bold')
-        plt.show()
+#length of game
+k=100
 
-#FR
-def first_FR():
-    for i in range(len(dict)):
-        fig = plt.figure()
-        ax = fig.add_subplot()
-        ax.axis('off')
-        ax.text(0.1,0.5,dict.at[i, 'FRENCH'], fontsize=40, fontweight='bold')
-        plt.show()
-        fig = plt.figure()
-        ax = fig.add_subplot()
-        ax.axis('off')
-        ax.text(0.1, 0.5, dict.at[i, 'POLISH'], fontsize=40, fontweight='bold')
-        plt.show()
+#randomize
+r = np.random.randint(0, len(dict), size=k)
+
+
+# MAIN ROOT
+###################################################################################################################
+
+def translate(rootPL,i,a):
+    if a == 'POLISH':
+        Translate_button = tk.Button(rootPL,
+            text = "Show translation",
+            command = lambda: showinfo(
+                'Translation of' + dict.at[r[i],a],
+                dict.at[r[i],'FRENCH']
+            )
+        )
+    else:
+        Translate_button = tk.Button(rootPL, text = "Show translation", command = lambda: showinfo('Translation of' + dict.at[r[i], a], dict.at[r[i],'POLISH']))
+    return Translate_button
+
+def next_word(rootPL,i,a):
+    if i < (k-1):
+        rootPL.destroy()
+        first_language(i + 1, a)
+    else:
+        showinfo('Information',
+                 'This is the last word. Please choose last word or quit the game.'
+        )
+
+def last_word(rootPL,i,a):
+    if i > 0:
+        rootPL.destroy()
+        first_language(i - 1, a)
+    else:
+        showinfo(
+            'Information',
+            'This is the first word. Please choose next word or quit the game.'
+        )
+
+def next_button(rootPL,i,a):
+    Next_button = tk.Button(
+        rootPL,
+        text = "Next word",
+        command = lambda: next_word(rootPL,i,a)
+    )
+    return Next_button
+
+def last_button(rootPL,i,a):
+    Last_button = tk.Button(
+        rootPL,
+        text="Last word",
+        command=lambda: last_word(rootPL, i, a)
+    )
+    return Last_button
+
+
+def first_language(i,a):
+    rootPL = tk.Toplevel(root)
+    rootPL.geometry('600x400')
+    rootPL.resizable(True, True)
+    rootPL.title(a)
+    rootPL['bg'] = '#49A'
+    l = tk.Label(
+        rootPL,
+        text = dict.at[r[i],a],
+        font=("Arial", 40),
+        bg = '#49A',
+        #fg = '#10159f'
+    )
+    ExitPL_button = tk.Button(rootPL, text = "Exit", command = rootPL.destroy)
+    Translate_button = translate(rootPL,i,a)
+    Next_button = next_button(rootPL,i,a)
+    Last_button = last_button(rootPL,i,a)
+    l.pack()
+    Translate_button.pack(ipadx=5,ipady=4,expand=True)
+    Next_button.pack(ipadx=5,ipady=4,expand=True)
+    Last_button.pack(ipadx=5,ipady=4,expand=True)
+    ExitPL_button.pack(ipadx=5,ipady=4,expand=True)
+    rootPL.mainloop()
+
 
 #root window
 root = tk.Tk()
-root.geometry('300x200')
-root.resizable(False, False)
+root.geometry('500x400')
+root.resizable(True, True)
 root.title('LearnFrench')
+root['bg'] = '#49A'
+root.attributes('-alpha', 0.2)
+
 
 #exit button
 exit_button = ttk.Button(
     root,
     text='Exit',
-    command=lambda: root.quit()
+    command=lambda: root.destroy()
 )
-
 exit_button.pack(
     ipadx=5,
     ipady=5,
@@ -57,10 +117,9 @@ exit_button.pack(
 #PL button
 PL_button = ttk.Button(
     root,
-    text='PL',
-    command= first_PL
+    text = 'PL',
+    command = lambda: first_language(0,'POLISH')
 )
-
 PL_button.pack(
     ipadx=5,
     ipady=5,
@@ -70,10 +129,9 @@ PL_button.pack(
 #FR button
 FR_button = ttk.Button(
     root,
-    text='FR',
-    command= first_FR
+    text = 'FR',
+    command = lambda: first_language(0,'FRENCH')
 )
-
 FR_button.pack(
     ipadx=5,
     ipady=5,
